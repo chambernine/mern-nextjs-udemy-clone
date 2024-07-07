@@ -1,5 +1,5 @@
 "use client";
-import { Course } from "@prisma/client";
+import { Course, Section } from "@prisma/client";
 import Link from "next/link";
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -18,6 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import toast from "react-hot-toast";
+import SectionList from "@/components/sections/SectionList";
+import { list } from "postcss";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -25,7 +27,11 @@ const formSchema = z.object({
   }),
 });
 
-export default function CreateSectionForm({ course }: { course: Course }) {
+export default function CreateSectionForm({
+  course,
+}: {
+  course: Course & { sections: Section[] };
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const routes = [
@@ -54,10 +60,27 @@ export default function CreateSectionForm({ course }: { course: Course }) {
         values
       );
       router.push(`/instructor/courses/${course.id}/sections/${res.data.id}`);
-      toast.success("Section created!");
+      toast.success("New Section created!");
     } catch (error) {
       toast.error("Something went wrong!");
       console.log("Failed to create a new section", error);
+    }
+  };
+
+  const onReorder = async (
+    updateData: {
+      id: string;
+      position: number;
+    }[]
+  ) => {
+    try {
+      await axios.put(`/api/courses/${course.id}/sections/reorder`, {
+        list: updateData,
+      });
+      toast.success("Sections reordered successfully");
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.log("Failed to reorder sections", error);
     }
   };
 
@@ -74,6 +97,14 @@ export default function CreateSectionForm({ course }: { course: Course }) {
       </div>
 
       <h1 className="text-xl font-bold mt-5">Add New Section</h1>
+
+      <SectionList
+        items={course.sections || []}
+        onReorder={onReorder}
+        onEdit={(id) => {
+          router.push(`/instructor/courses/${course.id}/sections/${id}`);
+        }}
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
