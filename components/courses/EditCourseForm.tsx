@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,7 +23,7 @@ import Link from "next/link";
 import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Trash } from "lucide-react";
+import { Loader2, Trash } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -72,6 +71,7 @@ export default function EditCourseForm({
     },
   });
 
+  const { isValid, isSubmitting } = form.formState;
   // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -222,6 +222,7 @@ export default function EditCourseForm({
                     value={field.value || ""}
                     onchange={(url) => field.onChange(url)}
                     endpoint="courseBanner"
+                    page="Edit Course"
                   />
                 </FormControl>
                 <FormMessage />
@@ -252,7 +253,13 @@ export default function EditCourseForm({
                 Cancel
               </Button>
             </Link>
-            <Button type="submit">Save</Button>
+            <Button type="submit" disabled={!isValid || isSubmitting}>
+              {isSubmitting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Save"
+              )}
+            </Button>
           </div>
         </form>
       </Form>

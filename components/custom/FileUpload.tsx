@@ -9,16 +9,18 @@ interface FileUploadProps {
   value: string;
   onchange: (url: string) => void;
   endpoint: keyof typeof ourFileRouter;
+  page: string;
 }
 
 export default function FileUpload({
   value,
   onchange,
   endpoint,
+  page,
 }: FileUploadProps) {
   return (
     <div className="flex flex-col gap-2">
-      {value && (
+      {page === "Edit Course" && value && (
         <Image
           src={value}
           width={500}
@@ -26,6 +28,9 @@ export default function FileUpload({
           alt="image"
           className="w-[280px] h-[200px] object-cover rounded-1"
         />
+      )}
+      {page === "Edit Section" && value !== "" && (
+        <p className="text-sm font-medium">{value}</p>
       )}
       <UploadDropzone
         endpoint={endpoint}
