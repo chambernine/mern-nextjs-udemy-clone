@@ -25,6 +25,7 @@ import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import Delete from "@/components/custom/Delete";
+import PublishButton from "../custom/PublishButton";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -49,12 +50,14 @@ interface EditCourseFormProps {
     }[];
   }[];
   levels: { label: string; value: string }[];
+  isCompleted: boolean;
 }
 
 export default function EditCourseForm({
   course,
   categories,
   levels,
+  isCompleted,
 }: EditCourseFormProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -109,7 +112,12 @@ export default function EditCourseForm({
           ))}
         </div>
         <div className="flex gap-4 items-start">
-          <Button variant="outline">Publish</Button>
+          <PublishButton
+            disabled={!isCompleted}
+            courseId={course.id}
+            isPublished={course.isPublished}
+            page="Course"
+          />
           <Delete item="course" courseId={course.id} />
         </div>
       </div>
@@ -120,7 +128,9 @@ export default function EditCourseForm({
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel>
+                  Title <span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Ex. Introduction to React" {...field} />
                 </FormControl>
@@ -149,7 +159,9 @@ export default function EditCourseForm({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>
+                  Description <span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
                   <RichEditor
                     placeholder="What is this course about?"
@@ -167,7 +179,9 @@ export default function EditCourseForm({
               name="categoryId"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>
+                    Category <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Combobox options={categories} {...field} />
                   </FormControl>
@@ -180,7 +194,9 @@ export default function EditCourseForm({
               name="subCategoryId"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Subcategory</FormLabel>
+                  <FormLabel>
+                    Subcategory <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Combobox
                       options={
@@ -201,7 +217,9 @@ export default function EditCourseForm({
               name="levelId"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Level</FormLabel>
+                  <FormLabel>
+                    Level <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Combobox options={levels} {...field} />
                   </FormControl>
@@ -215,7 +233,9 @@ export default function EditCourseForm({
             name="imageUrl"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Course Banner</FormLabel>
+                <FormLabel>
+                  Course Banner <span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
                   <FileUpload
                     value={field.value || ""}
@@ -233,7 +253,9 @@ export default function EditCourseForm({
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price (USD)</FormLabel>
+                <FormLabel>
+                  Price <span className="text-red-500">*</span>(USD)
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="number"

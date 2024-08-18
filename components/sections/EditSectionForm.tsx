@@ -28,6 +28,7 @@ import FileUpload from "../custom/FileUpload";
 import { Switch } from "@/components/ui/switch";
 import ResourceForm from "./ResourceForm";
 import Delete from "@/components/custom/Delete";
+import PublishButton from "@/components/custom/PublishButton";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -86,7 +87,13 @@ export default function EditSectionForm({
           </Button>
         </Link>
         <div className="flex gap-4 items-start">
-          <Button variant="outline">Publish</Button>
+          <PublishButton
+            disabled={!isCompleted}
+            courseId={courseId}
+            sectionId={section.id}
+            isPublished={section.isPublished}
+            page="Section"
+          />
           <Delete item="section" courseId={courseId} sectionId={section.id} />
         </div>
       </div>
@@ -102,7 +109,9 @@ export default function EditSectionForm({
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel>
+                  Title <span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Ex. Introduction to React" {...field} />
                 </FormControl>
@@ -116,7 +125,9 @@ export default function EditSectionForm({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>
+                  Description <span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
                   <RichEditor
                     placeholder="What is this section about?"
@@ -141,7 +152,9 @@ export default function EditSectionForm({
             name="videoUrl"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Video</FormLabel>
+                <FormLabel>
+                  Video <span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
                   <FileUpload
                     value={field.value || ""}

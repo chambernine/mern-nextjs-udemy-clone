@@ -8,7 +8,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Chambernine Academy",
-  description: "Empowering minds, shaping future",
+  description:
+    "Empowering minds, shaping future, and making a positive impact.",
 };
 
 export default function RootLayout({
