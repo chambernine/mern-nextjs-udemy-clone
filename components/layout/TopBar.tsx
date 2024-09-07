@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { UserButton, useAuth } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 
 export default function TopBar() {
   const { isSignedIn } = useAuth();
-  console.log(isSignedIn);
 
   const router = useRouter();
   const pathName = usePathname();
@@ -20,13 +19,14 @@ export default function TopBar() {
     { label: "Learning", path: "/learning" },
   ];
 
-  const sidebarRoutes = [
-    { label: "Courses", path: "/instructor/courses" },
-    {
-      label: "Performance",
-      path: "/instructor/performance",
-    },
-  ];
+  const [searchInput, setSearchInput] = useState("");
+
+  const handleSearch = () => {
+    if (searchInput.trim() !== "") {
+      router.push(`/search?query=${searchInput}`);
+    }
+    setSearchInput("");
+  };
   return (
     <div className="flex justify-between items-center p-4">
       <Link href="/">
@@ -36,11 +36,13 @@ export default function TopBar() {
         <input
           className="flex-grow bg-[#FFF8EB] rounded-l-full border-none outline-none text-sm pl-4 py-3"
           placeholder="Search for courses"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
         <button
           className="bg-[#FDAB04] rounded-r-full border-none outline-none cursor-pointer px-4 py-3 hover:bg-[#FDAB04]/80"
-          // disabled={searchInput.trim() === ""}
-          // onClick={handleSearch}
+          disabled={searchInput.trim() === ""}
+          onClick={handleSearch}
         >
           <Search className="h-4 w-4" />
         </button>
